@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Iconizer is currently in development and hasn't had an official release yet. Once we launch version 1.0, we'll provide a table of supported versions here.
+This project is currently in development and hasn't had an official release yet. Once we launch version 1.0, we'll provide a table of supported versions here.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -32,14 +32,4 @@ After submitting a vulnerability report:
 - We'll keep you updated as we work on a fix
 - Once the vulnerability is addressed, we'll credit you (if desired) when we disclose the issue
 
-## Security Best Practices for Developers
-
-If you're contributing to Iconizer, please follow these security practices:
-
-1. Keep dependencies updated
-2. Do not commit credentials or sensitive configuration to the repository
-3. Follow secure coding practices for C# and WPF applications
-4. Use parameterized queries when interacting with any data stores
-5. Handle file system operations securely to prevent path traversal attacks
-
-Thank you for helping keep Iconizer secure!
+Thank you for helping keep this project secure!
