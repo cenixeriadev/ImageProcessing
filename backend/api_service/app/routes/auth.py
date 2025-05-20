@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel , EmailStr
 from app.models import User
 from app.auth import hash_password, verify_password, create_access_token, get_db
 
@@ -11,7 +11,7 @@ class AuthInput(BaseModel):
     password: str
 
 class RegisterInput(AuthInput):
-    email: str
+    email: EmailStr
 
 @router.post("/register")
 def register(data: RegisterInput, db: Session = Depends(get_db)):
