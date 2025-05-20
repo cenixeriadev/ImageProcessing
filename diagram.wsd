@@ -1,0 +1,117 @@
+@startuml ImageProcessing
+skinparam defaultTextAlignment center
+skinparam componentStyle rectangle
+
+
+!$ICONURL = "https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v3.0.0/icons"
+!include $ICONURL/common.puml
+!include $ICONURL/devicons2/terraform.puml
+!include $ICONURL/devicons/python.puml
+!include $ICONURL/devicons2/postgresql.puml
+!include $ICONURL/devicons2/docker_wordmark.puml
+!include $ICONURL/devicons2/kubernetes_wordmark.puml
+!include $ICONURL/devicons2/apachekafka_original_wordmark.puml
+
+!include <aws/common>
+!include <aws/Storage/AmazonS3/AmazonS3>
+!include <aws/Compute/AmazonEC2/AmazonEC2>
+!include <aws/General/AWScloud/AWScloud.puml>
+!include <aws/DeveloperTools/AWSCodePipeline/AWSCodePipeline.puml>
+!include <aws/ManagementTools/AmazonCloudWatch/AmazonCloudWatch.puml>
+
+left to right direction
+
+rectangle "Frontend / User Interface" {
+  component User <<user>> #white
+  component Login <<component>> #lightblue
+  User --> Login : HTTPS
+}
+
+package "Backend (FastAPI)" #E0FFE0 {
+  DEV_PYTHON(FastAPI) #YellowGreen
+  Login --> FastAPI : Auth Request
+  component API_Endpoints [
+    ====== API Endpoints ======
+    • POST /upload
+    • POST /transform
+    • DELETE /images/{id}
+    • GET /images/{id}
+  ]
+  FastAPI --> API_Endpoints
+}
+
+
+rectangle "Authentication" {
+  component AuthService <<component>> #pink
+  FastAPI --> AuthService : Validate Token
+}
+
+rectangle "AWS Infrastructure" {
+  AWSCLOUD(aws) {
+    AMAZONEC2(EC2){
+
+    }
+    AMAZONS3(S3){
+    }
+    DEV2_TERRAFORM(CF)#DarkViolet
+  }
+  CF --> EC2 : Provisions
+  CF --> S3 : Provisions
+}
+
+rectangle "Database" {
+  DEV2_POSTGRESQL(PostgreSQL) #lightblue
+  
+}
+
+package "Containerization" #E6E6FA {
+  DEV2_DOCKER_WORDMARK(Docker) #cyan
+  DEV2_KUBERNETES_WORDMARK(Kubernetes) #326CE5
+  EC2 --> Docker : Hosts containers
+  Kubernetes --> Docker : Orchestrates pods
+  note left
+    Auto‑scaling based on CPU & queue depth
+  end note
+}
+
+package "Queue & Workers🙂‍↔️" #F5F5F5 {
+  DEV2_APACHEKAFKA_ORIGINAL_WORDMARK(Kafka) #gray
+  component Workers <<component>> #grey
+  API_Endpoints --> Kafka : Produce transform task
+  Kafka --> Workers : Consume task
+  FastAPI --> Kafka : (retry on failure)
+}
+
+rectangle "Local Development" {
+  component MinIO #red [
+    ======
+    MinIO
+    ------
+    S3-Compatible Storage
+  ]
+  note right: Used only in development
+}
+
+' Data Flow
+User --> FastAPI : Upload Image
+FastAPI --> S3 : Store Original
+FastAPI --> Kafka : Transform Request
+Workers --> S3 : Get Original
+Workers --> S3 : Store Transformed
+Workers --> PostgreSQL : Update Status
+User <--> FastAPI : Delete Image
+
+' Security Elements
+cloud Security #lightgreen {
+  component HTTPS <<lock>> #green
+  component IAM <<key>> #orange
+}
+
+User --> HTTPS : Secure Connection
+HTTPS --> FastAPI : Encrypted Data
+IAM --> EC2 : Access Control
+IAM --> S3 : Bucket Policies
+
+
+
+@enduml
