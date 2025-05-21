@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID, JSONB
 import uuid
 from app.database import Base
 
+
 class User(Base):
     __tablename__ = "users"
 
