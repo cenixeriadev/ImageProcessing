@@ -57,4 +57,4 @@ def process_image_task(original_key: str, transformation: dict) -> str:
     new_key = f"transformed/{uuid.uuid4()}.{format.lower()}"
     upload_image(buffer.read(), new_key, content_type=f"image/{format.lower()}")
 
-    return new_key
+    return "http://localhost:9000/dev-bucket/" + new_key
