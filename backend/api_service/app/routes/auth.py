@@ -51,7 +51,7 @@ def login(data: AuthInput, db: Session = Depends(get_db)):
         httponly=True,
         samesite="strict",
         secure=False,  # cambia a True en producción con HTTPS
-        max_age= 60
+        max_age= 3000
     )
     return response
 @router.post("/logout")
