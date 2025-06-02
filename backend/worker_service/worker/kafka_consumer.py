@@ -30,18 +30,23 @@ def handle_task(task_data):
             logger.warning(f"⚠️ Tarea {task_id} no encontrada en DB.")
             return
 
-        task.status = "processing"
         db.commit()
-
+        task_transformation = ImageTask(
+            user_id=task.user_id,
+            image_path=task.image_path,
+            status="processing",
+            transformation=task_data["transformation"]
+        )
         # 🧠 Procesar imagen y subir resultado
         new_path = process_image_task(task_data["image_path"], task_data["transformation"])
-        task.image_path = new_path
-        task.status = "completed"
-        task.completed_at = datetime.utcnow()
+        task_transformation.image_path = new_path
+        task_transformation.status = "completed"
+        task_transformation.completed_at = datetime.utcnow()
 
-        db.add(TaskLog(task_id=task.id, log_message="Transformación completada."))
+        db.add(TaskLog(task_id=task_transformation.id, log_message="Transformación completada."))
+        db.add(task_transformation)
         db.commit()
-        logger.info(f"✅ Tarea {task_id} completada.")
+        logger.info(f"✅ Tarea {task_transformation.id} completada.")
         
     except Exception as e:
         task = db.query(ImageTask).filter(ImageTask.id == task_id).first()

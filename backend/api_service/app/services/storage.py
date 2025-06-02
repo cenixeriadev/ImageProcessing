@@ -52,9 +52,16 @@ def upload_image(file_data: bytes, original_filename: str) -> str:
     except NoCredentialsError:
         raise Exception("Credenciales de MinIO no configuradas correctamente.")
 
-def delete_image(file_url: str):
+def delete_image(file_url: str)->None:
     """Elimina una imagen del bucket usando su URL."""
-    parsed = urlparse(file_url)
-    key = '/'.join(parsed.path.split('/')[2:])  # quitar el bucket del path
+    try:
+        
+        parsed = urlparse.urlparse(file_url)
+        key = '/'.join(parsed.path.split('/')[2:])  # quitar el bucket del path
 
-    s3.delete_object(Bucket=BUCKET_NAME, Key=key)
+        s3.delete_object(Bucket=BUCKET_NAME, Key=key)
+    except s3.exceptions.NoSuchKey:
+        logger.warning(f"🗑️ La imagen {file_url} no existe en MinIO.")
+    except Exception as e:
+        logger.error(f"❌ Error al eliminar la imagen {file_url}: {e}")
+        raise e

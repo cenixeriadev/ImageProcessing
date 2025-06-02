@@ -71,3 +71,17 @@ def get_image(image_id: str, db: Session = Depends(get_db), user = Depends(get_c
         "id": str(image.id),
         "url": image.image_path
     }
+
+
+@router.delete("/images/{image_id}")
+def delete_image(image_id: str, db: Session = Depends(get_db), user = Depends(get_current_user)):
+    image = db.query(ImageTask).filter(ImageTask.id == image_id, ImageTask.user_id == user.id).first()
+
+    if not image:
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+
+    storage.delete_image(image.image_path)
+    db.delete(image)
+    db.commit()
+
+    return {"message": "Imagen eliminada exitosamente"}
