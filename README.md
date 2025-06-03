@@ -6,13 +6,13 @@ Este proyecto consiste en crear un sistema backend para un servicio de procesami
 
 ## 🚀 Tecnologías y Herramientas
 
-- **Lenguaje**: (agrega tu stack preferido, ej. Node.js, Python, Java, etc.)
-- **Almacenamiento de Imágenes**: AWS S3
+- **Lenguaje**: Python (Fast Api)
+- **Almacenamiento de Imágenes**: AWS S3 (Para dev MiniO)
 - **Autenticación**: JWT (JSON Web Tokens)
-- **Procesamiento de Imágenes**: (ej. Sharp, Pillow, ImageMagick, etc.)
-- **Base de Datos**: (ej. PostgreSQL)
+- **Procesamiento de Imágenes**: Pillow
+- **Base de Datos**: PostgreSQL
 - **Infraestructura**: AWS
-- **(Opcional)**:  Kafka para procesamiento asíncrono
+- **Procesamiento asíncrono**:  Kafka 
 
 ---
 
