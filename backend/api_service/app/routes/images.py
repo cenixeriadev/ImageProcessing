@@ -2,7 +2,6 @@ from fastapi import APIRouter, UploadFile, File, Depends
 from app.services import storage, kafka_producer
 from app.models import ImageTask
 from app.database import SessionLocal
-import uuid
 from app.auth import get_current_user
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
