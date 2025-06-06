@@ -1,21 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from pydantic import BaseModel , EmailStr
 from app.models import User
-from app.schemas import UserResponse
+from app.schemas import UserResponse , AuthInput, RegisterInput
 from app.auth import hash_password, verify_password, create_access_token, get_db , get_current_user
 from fastapi.responses import JSONResponse
 import datetime
 
 router = APIRouter()
-
-class AuthInput(BaseModel):
-    username: str
-    password: str
-    remember_me: bool = False
-
-class RegisterInput(AuthInput):
-    email: EmailStr
 
 @router.post("/register")
 def register(data: RegisterInput, db: Session = Depends(get_db)):

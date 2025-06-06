@@ -1,8 +1,27 @@
 # app/schemas.py
 
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
+
+#---------------------------------
+# Auth
+#---------------------------------
+class AuthInput(BaseModel):
+    username: str
+    password: str
+    remember_me: bool = False
+
+class RegisterInput(AuthInput):
+    email: EmailStr
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
+
 
 # -------------------------------
 # Usuario
@@ -82,13 +101,3 @@ class TaskLogResponse(BaseModel):
     class Config:
         orm_mode = True
 
-# -------------------------------
-# Auth
-# -------------------------------
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
