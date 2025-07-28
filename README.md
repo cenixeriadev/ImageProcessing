@@ -1,4 +1,4 @@
-# 🖼️ Image Processing Service Backend-MaybeFrontend (Cloudinary-like)
+# 🖼️ Image Processing Service(Cloudinary-like)
 
 Este proyecto consiste en crear un sistema backend para un servicio de procesamiento de imágenes similar a **Cloudinary**, permitiendo a los usuarios subir imágenes, transformarlas (redimensionar, recortar, rotar, aplicar filtros, etc.) y recuperarlas en distintos formatos.
 
