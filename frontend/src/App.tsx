@@ -1,10 +1,17 @@
-import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./components/login";
+import Register from "./components/register";
+import Home from "./pages/Home";
 
 function App() {
   return (
-    <div>
-      <h1>Hola</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/Home" element={<Home />} />
+        <Route path="/Register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
