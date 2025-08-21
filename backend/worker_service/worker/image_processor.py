@@ -41,6 +41,29 @@ def process_image_task(original_key: str, transformation: dict) -> str:
     if transformation.get("mirror"):
         logger.info("🔄 Aplicando transformación de espejo")
         image = ImageOps.mirror(image)
+    if transformation.get("flip"):
+        logger.info("🔄 Aplicando transformación de volteo")
+        image = ImageOps.flip(image)
+    if transformation.get("rotate"):
+        angle = transformation["rotate"].get("angle", 0)
+        logger.info(f"🔄 Rotando imagen {angle} grados")
+        # Usar expand=True para evitar recortar la imagen al rotar
+        image = image.rotate(angle, expand=True)
+    if transformation.get("crop"):
+        crop_params = transformation["crop"]
+        x = crop_params.get("x", 0)
+        y = crop_params.get("y", 0)
+        width = crop_params.get("width")
+        height = crop_params.get("height")
+        
+        if width is not None and height is not None:
+            logger.info(f"✂️ Recortando imagen desde ({x},{y}) con dimensiones {width}x{height}")
+            right = x + width
+            bottom = y + height
+            image = image.crop((x, y, right, bottom))
+        else:
+            logger.warning("⚠️ Recorte solicitado sin dimensiones especificadas.")
+    
     # TODO: Añadir más implementaciones
 
     # Guardar en memoria como bytes
