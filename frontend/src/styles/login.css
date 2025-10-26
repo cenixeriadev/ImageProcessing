@@ -1,14 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-body {
-  display: relative;
-  justify-content: center;
-  min-height: 100vh;
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
 }
 
 .container1 {
-  width: 480px;
-  height: 660px;
+  width: 490px;
+  height: 690px;
   margin-top: 64px;
   margin-left: 900px;
   box-shadow: 0 0 30px rbgba(0, 0, 0, 0.2);
@@ -16,14 +16,12 @@ body {
 }
 
 .cuadrado {
-  width: 500px; /* ancho */
-  height: 700px;
+  width: 870px;
+  min-height: 770px;
   background: linear-gradient(180deg, #8fbed8, #569ec4, #1e7db0);
   margin-left: -20px;
   margin-top: -760px;
-  padding-bottom: 130px;
-  padding-right: 330px;
-  margin-bottom: 20px;
+  overflow: hidden;
 }
 
 .cuadrado h1 {
@@ -38,12 +36,12 @@ body {
 /* El diseño de todo el formulario*/
 .form-box {
   padding-top: 20px;
-  top: 10px;
+  top: -20px;
   color: black;
   position: relative;
-  right: -25.7px;
+  right: -44.7px;
   width: 92%;
-  height: 60%;
+  height: 90%;
   margin-top: 30px;
 }
 
@@ -132,7 +130,7 @@ diseño del input, automaticamente, se modifica */
 .input-box .bx.bx-low-vision {
   position: absolute;
   right: -73px;
-  top: 17.8%;
+  top: 12.8%;
   transform: translate(-70%);
   width: 35px;
   height: 35px;
@@ -164,7 +162,7 @@ diseño del input, automaticamente, se modifica */
   border-radius: 84px;
   font-family: "Poppins";
   margin-top: 30px;
-  margin-left: 90px;
+  margin-left: 102px;
 }
 
 .btn-Github-login i {
@@ -176,6 +174,7 @@ diseño del input, automaticamente, se modifica */
 }
 
 .separador {
+  margin-top: 20px;
   display: flex;
   align-items: center;
   gap: 10px; /* espacio entre línea y texto */
@@ -189,13 +188,19 @@ diseño del input, automaticamente, se modifica */
 
 .separador p {
   margin: 0;
+  font-size: 22px;
   font-weight: bold;
   color: #000000;
 }
 
+.flex-gap {
+  display: flex;
+  gap: 6px;
+  padding-left: 73px;
+}
+
 .btn-github-repository {
   display: inline-flex;
-  gap: 2px;
   align-items: center;
   padding: 9px 33px;
   background-color: white;
@@ -219,7 +224,7 @@ diseño del input, automaticamente, se modifica */
   width: 150px;
   height: 36px;
   /*margin(Top, Right, Bottom, left)*/
-  margin: 15px auto 20px 141px;
+  margin: 19px auto 20px 155px;
   display: block;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgb a(255, 255, 255, 0.3);
@@ -230,6 +235,7 @@ diseño del input, automaticamente, se modifica */
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  border-width: 1px;
 }
 
 .btn-glass:active,

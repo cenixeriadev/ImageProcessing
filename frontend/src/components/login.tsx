@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/Login.css";
+import icon from "../assets/Icons/repo.svg";
 
 export default function Login() {
   return (
@@ -7,16 +8,14 @@ export default function Login() {
       <div className="container1">
         <div className="form-box">
           <a
-            href="#"
+            href="https://github.com/cenixeriadev/ImageProcessing.git"
             className="btn-github-repository"
             aria-label="View GitHub repository"
           >
-            <i className="bx bxl-github"></i>
-            <i className="bx bxs-folder"></i>
+            <img src={icon} alt="Logo SVG" width="16" />
           </a>
           <form>
-            <h1>Log in</h1>
-            <p>Hi, Welcome back, fill each gap with your user credentials.</p>
+            <></>
             <div className="input-box">
               <input
                 id="login-user"
@@ -41,8 +40,8 @@ export default function Login() {
             <button type="submit" className="btn-glass">
               Sign In
             </button>
-            <p>
-              Don't have an account yet?
+            <p className="flex-gap">
+              <span>Don't have an account yet?</span>
               <a href="" className="Sign-up button" type="button">
                 Sign Up
               </a>
