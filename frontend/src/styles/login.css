@@ -1,53 +1,61 @@
 @import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-* {
+/* OJO: 
+
+Margin es usado para dar distancia entre elementos distintos 
+
+Padding es usado para dar un espacio interno entre el contenedor y su contenido
+
+*/
+
+body {
+  background-color: wheat;
   margin: 0;
-  padding: 0;
   font-family: "Poppins", sans-serif;
 }
 
+/*Contenedor del formulario (afuera)*/
 .container1 {
-  width: 490px;
-  height: 690px;
-  margin-top: 64px;
-  margin-left: 900px;
+  position: relative;
+  height: 800px;
+  width: 36%;
+  margin-top: 50px;
+  margin-left: 1100px;
   box-shadow: 0 0 30px rbgba(0, 0, 0, 0.2);
   /*margin(Top, Right, Bottom, left)*/
 }
 
-.cuadrado {
-  width: 870px;
-  min-height: 770px;
-  background: linear-gradient(180deg, #8fbed8, #569ec4, #1e7db0);
-  margin-left: -20px;
-  margin-top: -760px;
-  overflow: hidden;
-}
-
 .cuadrado h1 {
-  padding-top: 100px;
-  padding-left: 160px;
+  padding-top: 320px;
+  padding-left: 100px;
 }
 
-.cuadrado p {
-  padding-top: 20px;
+.container .login {
+  margin-top: -40px;
+  font-weight: bold;
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: -10px;
 }
 
-/* El diseño de todo el formulario*/
+.container .descripcion {
+  font-weight: 300;
+  font-size: 15px;
+  margin-bottom: -30px;
+  padding: 20px;
+  margin-top: 0; /* elimina espacio superior del párrafo */
+}
+
+/* El diseño de todo el formulario (dentro del contenedor)*/
 .form-box {
-  padding-top: 20px;
-  top: -20px;
-  color: black;
   position: relative;
-  right: -44.7px;
-  width: 92%;
-  height: 90%;
-  margin-top: 30px;
-}
-
-/*El mismo formulario hecho en html*/
-form {
-  width: 100%;
+  padding-top: 120px;
+  top: 50px;
+  position: relative;
+  right: -94.7px;
+  width: 73%;
+  height: 70%;
+  padding-left: 10px;
 }
 
 .forgot-password {
@@ -57,8 +65,8 @@ form {
   font-weight: 500;
   font-size: 12px;
   margin-top: -19px;
-  margin-left: 280px;
-  padding-top: 9 px;
+  margin-left: 312px;
+  padding-top: 9px;
   margin-bottom: 14px;
 }
 
@@ -69,7 +77,6 @@ form {
   margin: -4.2px 0px 13.6px 0px;
   text-align: center;
   font-family: "Poppins";
-  font-weight: 300;
 }
 
 .container p {
@@ -107,7 +114,7 @@ form {
   font-weight: 500;
   display: block;
   /*margin(Top, Right, Bottom, left)*/
-  margin: 24px 0px 23px 0px;
+  margin: 24px 0px 25px 0px;
 }
 
 /*Para las letras que estan dentro del input*/
@@ -145,50 +152,49 @@ diseño del input, automaticamente, se modifica */
   margin-bottom: -14px;
 }
 
-.btn-Github-login {
+.btn-github-login {
   display: inline-flex;
-  gap: 2px;
+  gap: 14px; /* separación equilibrada */
   align-items: center;
   padding: 9px 33px;
-  background-color: white;
   color: #333;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 0.1px solid black;
+  border-radius: 9px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none; /* solo para <a> */
   transition: background 0.3s ease;
   border-radius: 84px;
   font-family: "Poppins";
-  margin-top: 30px;
-  margin-left: 102px;
+  margin-left: 125px;
+  margin-top: 2px;
 }
 
-.btn-Github-login i {
+.btn-github-login i {
   border: none;
   font-size: 30px;
   background: none;
   color: #000000;
-  padding-right: 20px;
+  margin-right: 10px;
 }
 
 .separador {
   margin-top: 20px;
   display: flex;
   align-items: center;
-  gap: 10px; /* espacio entre línea y texto */
+  justify-content: center;
+  gap: 12px; /* espacio entre línea y texto */
 }
 
 .separador span {
-  flex: 1; /* que ocupe el espacio sobrante */
+  width: 190px; /* que ocupe el espacio sobrante */
   height: 1px; /* grosor */
-  background-color: #ccc; /* color de la línea */
+  background-color: black; /* color de la línea */
 }
 
 .separador p {
-  margin: 0;
-  font-size: 22px;
+  font-size: 30px;
   font-weight: bold;
   color: #000000;
 }
@@ -196,7 +202,8 @@ diseño del input, automaticamente, se modifica */
 .flex-gap {
   display: flex;
   gap: 6px;
-  padding-left: 73px;
+  padding-top: 10px;
+  padding-left: 100px;
 }
 
 .btn-github-repository {
@@ -207,16 +214,25 @@ diseño del input, automaticamente, se modifica */
   color: #333;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
   border-radius: 84px;
-  font-family: "Poppins";
-  margin-top: -20px;
-  margin-bottom: 20px;
-  margin-left: 320px;
+  /*Position abosulte es para darle una posición específica */
+  position: absolute;
+  top: 30px; /* distancia desde la parte superior */
+  right: 40px; /* distancia desde la derecha */
+  margin: 0; /* elimina los márgenes */
 }
+
+.logo-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/*---------NO TOCAR----------*/
 
 /* Boton de vidrio animado de send SUBMIT CREDENTIALS */
 
@@ -224,7 +240,7 @@ diseño del input, automaticamente, se modifica */
   width: 150px;
   height: 36px;
   /*margin(Top, Right, Bottom, left)*/
-  margin: 19px auto 20px 155px;
+  margin: 19px auto 20px 176px;
   display: block;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgb a(255, 255, 255, 0.3);
@@ -258,4 +274,25 @@ diseño del input, automaticamente, se modifica */
   100% {
     background-position: 0% 50%;
   }
+}
+
+/* Imagen flotante con libertad */
+/* Imagen flotante fija en esquina inferior izquierda */
+.logo-img {
+  position: fixed; /* se mantiene fija aunque hagas scroll */
+  bottom: 20px; /* distancia desde abajo */
+  left: 20px; /* distancia desde el borde izquierdo */
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 9999; /* asegura que quede por encima de todo */
+}
+
+.logo-img:hover {
+  transform: scale(1.1) rotate(8deg);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
