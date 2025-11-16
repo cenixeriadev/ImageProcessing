@@ -19,7 +19,7 @@ def download_image(key: str) -> Image.Image:
         obj = s3.get_object(Bucket=BUCKET_NAME, Key=key)
         return Image.open(io.BytesIO(obj["Body"].read()))
     except ClientError as e:
-        raise Exception(f"❌ Error al descargar {key}: {e.response['Error']['Message']}")
+        raise Exception(f"Error al descargar {key}: {e.response['Error']['Message']}")
 
 def upload_image(file_bytes: bytes, key: str, content_type: str = "image/jpeg")->None:
     s3.put_object(

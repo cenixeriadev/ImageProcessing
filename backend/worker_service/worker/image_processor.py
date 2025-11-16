@@ -20,7 +20,7 @@ def process_image_task(original_key: str, transformation: dict) -> str:
 
     #  Descargar imagen desde MinIO como objeto PIL
     key = get_key(original_key)
-    logger.info(f"📥 Descargando imagen desde MinIO con key: {key}")
+    logger.info(f"Descargando imagen desde MinIO con key: {key}")
     image = download_image(key)
 
     #  Aplicar transformaciones
@@ -29,24 +29,24 @@ def process_image_task(original_key: str, transformation: dict) -> str:
         width = size.get("width")
         height = size.get("height")
         if width and height:
-            logger.info(f"🔄 Redimensionando imagen a {width}x{height}")
+            logger.info(f"Redimensionando imagen a {width}x{height}")
             image = image.resize((width, height))
         else:
-            logger.warning("⚠️ Redimensionamiento solicitado sin ancho o alto especificado.")
+            logger.warning("Redimensionamiento solicitado sin ancho o alto especificado.")
 
     if transformation.get("grayscale"):
-        logger.info(f"🌈 Aplicando transformación a escala de grises  con {transformation.get('grayscale')}")
+        logger.info(f"Aplicando transformación a escala de grises  con {transformation.get('grayscale')}")
         image = ImageOps.grayscale(image)
 
     if transformation.get("mirror"):
-        logger.info("🔄 Aplicando transformación de espejo")
+        logger.info("Aplicando transformación de espejo")
         image = ImageOps.mirror(image)
     if transformation.get("flip"):
-        logger.info("🔄 Aplicando transformación de volteo")
+        logger.info("Aplicando transformación de volteo")
         image = ImageOps.flip(image)
     if transformation.get("rotate"):
         angle = transformation["rotate"].get("angle", 0)
-        logger.info(f"🔄 Rotando imagen {angle} grados")
+        logger.info(f"Rotando imagen {angle} grados")
         # Usar expand=True para evitar recortar la imagen al rotar
         image = image.rotate(angle, expand=True)
     if transformation.get("crop"):
@@ -57,12 +57,12 @@ def process_image_task(original_key: str, transformation: dict) -> str:
         height = crop_params.get("height")
         
         if width is not None and height is not None:
-            logger.info(f"✂️ Recortando imagen desde ({x},{y}) con dimensiones {width}x{height}")
+            logger.info(f"Recortando imagen desde ({x},{y}) con dimensiones {width}x{height}")
             right = x + width
             bottom = y + height
             image = image.crop((x, y, right, bottom))
         else:
-            logger.warning("⚠️ Recorte solicitado sin dimensiones especificadas.")
+            logger.warning("Recorte solicitado sin dimensiones especificadas.")
     
     # TODO: Añadir más implementaciones
 

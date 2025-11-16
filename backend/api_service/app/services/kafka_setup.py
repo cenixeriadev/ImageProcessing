@@ -14,9 +14,9 @@ def create_kafka_topic():
     for topic, f in result.items():
         try:
             f.result()  # Espera que se cree
-            logging.info(f"✅ Topic creado: {topic}")
+            logging.info(f"Topic creado: {topic}")
         except Exception as e:
             if "Topic already exists" in str(e):
-                logging.warning(f"⚠️ Topic ya existe: {topic}")
+                logging.warning(f"Topic ya existe: {topic}")
             else:
-                logging.error(f"❌ Error al crear topic {topic}: {e}")
+                logging.error(f"Error al crear topic {topic}: {e}")

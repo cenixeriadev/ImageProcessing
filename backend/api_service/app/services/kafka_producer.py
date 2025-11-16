@@ -22,7 +22,7 @@ def send_transformation_task(task_data: dict):
         serialized = json.dumps(task_data)
         producer.produce(TOPIC_NAME, value=serialized)
         producer.flush()  # asegura envío inmediato
-        print(f"📤 Enviado a Kafka: {task_data}")
+        print(f"Enviado a Kafka: {task_data}")
     except Exception as e:
-        print(f"❌ Error al enviar tarea a Kafka: {e}")
+        print(f"Error al enviar tarea a Kafka: {e}")
         raise

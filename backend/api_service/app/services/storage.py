@@ -24,10 +24,10 @@ s3 = boto3.client(
 def ensure_bucket_exists():
     try:
         s3.head_bucket(Bucket=BUCKET_NAME)
-        logger.info(f"✅ Bucket '{BUCKET_NAME}' ya existe.")
+        logger.info(f"Bucket '{BUCKET_NAME}' ya existe.")
     except s3.exceptions.ClientError as e:
         if e.response['Error']['Code'] == '404':
-            logger.info(f"📦 Bucket '{BUCKET_NAME}' no existe. Creándolo...")
+            logger.info(f"Bucket '{BUCKET_NAME}' no existe. Creándolo...")
             s3.create_bucket(Bucket=BUCKET_NAME)
         else:
             raise
@@ -61,7 +61,7 @@ def delete_image(file_url: str)->None:
 
         s3.delete_object(Bucket=BUCKET_NAME, Key=key)
     except s3.exceptions.NoSuchKey:
-        logger.warning(f"🗑️ La imagen {file_url} no existe en MinIO.")
+        logger.warning(f"La imagen {file_url} no existe en MinIO.")
     except Exception as e:
-        logger.error(f"❌ Error al eliminar la imagen {file_url}: {e}")
+        logger.error(f"Error al eliminar la imagen {file_url}: {e}")
         raise e
