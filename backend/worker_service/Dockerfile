@@ -20,5 +20,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar todo el código del worker
 COPY ./worker_service/worker ./worker
 
+# Crear usuario no privilegiado
+RUN groupadd -r appuser && useradd -r -g appuser appuser \
+    && chown -R appuser:appuser /app
+
+# Cambiar a usuario no privilegiado
+USER appuser
+
 # Establecer entrypoint para iniciar Kafka consumer
 CMD ["python", "-m", "worker.main"]
