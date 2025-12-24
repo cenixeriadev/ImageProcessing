@@ -9,7 +9,7 @@ Padding es usado para dar un espacio interno entre el contenedor y su contenido
 */
 
 body {
-  background-color: wheat;
+  background: linear-gradient(90deg, #8fbed8, #569ec4, #1e7db0);
   margin: 0;
   font-family: "Poppins", sans-serif;
 }
