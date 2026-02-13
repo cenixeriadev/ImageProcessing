@@ -1,0 +1,171 @@
+{
+  "project_name": "ImageProcessing Backend",
+  "description": "A FastAPI-based image processing backend with authentication, image upload/storage (MinIO/S3), image transformations via Kafka workers, and PostgreSQL persistence.",
+  "tech_stack": {
+    "language": "Python 3.11+",
+    "framework": "FastAPI",
+    "database": "PostgreSQL",
+    "orm": "SQLAlchemy",
+    "authentication": "JWT (python-jose) + bcrypt (passlib)",
+    "object_storage": "MinIO (S3-compatible via boto3)",
+    "message_queue": "Apache Kafka (confluent-kafka)",
+    "validation": "Pydantic v2 / pydantic-settings",
+    "testing_dependencies": ["pytest", "httpx", "pytest-asyncio"]
+  },
+  "services": [
+    {
+      "name": "api_service",
+      "type": "REST API",
+      "entry_point": "api_service/app/main.py",
+      "description": "FastAPI application serving auth and image endpoints"
+    },
+    {
+      "name": "worker_service",
+      "type": "Background Worker",
+      "entry_point": "worker_service/worker/main.py",
+      "description": "Kafka consumer that processes image transformation tasks"
+    }
+  ],
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/register",
+      "handler": "api_service/app/routes/auth.py::register",
+      "description": "Register a new user. Returns JWT access token.",
+      "request_body": {
+        "username": "string",
+        "password": "string",
+        "email": "string (EmailStr)"
+      },
+      "auth_required": false,
+      "responses": {
+        "200": {"access_token": "string", "token_type": "bearer"},
+        "400": "Usuario ya existe"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "handler": "api_service/app/routes/auth.py::login",
+      "description": "Login with username/password. Returns JWT token and sets httponly cookie.",
+      "request_body": {
+        "username": "string",
+        "password": "string",
+        "remember_me": "bool (default false)"
+      },
+      "auth_required": false,
+      "responses": {
+        "200": {"access_token": "string", "token_type": "bearer"},
+        "401": "Credenciales inválidas"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/logout",
+      "handler": "api_service/app/routes/auth.py::logout",
+      "description": "Logout by deleting access_token cookie.",
+      "auth_required": false,
+      "responses": {
+        "200": {"message": "logged out"}
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/me",
+      "handler": "api_service/app/routes/auth.py::me",
+      "description": "Get current authenticated user info.",
+      "auth_required": true,
+      "responses": {
+        "200": "UserResponse (id, username, email, created_at, last_login)",
+        "401": "Token inválido"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/images",
+      "handler": "api_service/app/routes/images.py::upload_image",
+      "description": "Upload an image file to S3/MinIO storage.",
+      "request_body": "multipart/form-data with UploadFile",
+      "auth_required": true,
+      "responses": {
+        "200": {"id": "string", "url": "string"},
+        "401": "Token inválido"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/images/{image_id}/transform",
+      "handler": "api_service/app/routes/images.py::request_transformation",
+      "description": "Request an image transformation. Sends task to Kafka for async processing.",
+      "request_body": {"transformations": "dict"},
+      "auth_required": true,
+      "responses": {
+        "200": {"message": "Transformación solicitada, se procesará en background."},
+        "404": "Imagen no encontrada"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/images/{image_id}",
+      "handler": "api_service/app/routes/images.py::get_image",
+      "description": "Get a specific image by ID for the authenticated user.",
+      "auth_required": true,
+      "responses": {
+        "200": {"id": "string", "url": "string"},
+        "404": "Imagen no encontrada"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/images/{image_id}",
+      "handler": "api_service/app/routes/images.py::delete_image",
+      "description": "Delete a specific image by ID for the authenticated user.",
+      "auth_required": true,
+      "responses": {
+        "200": {"message": "Imagen eliminada exitosamente"},
+        "404": "Imagen no encontrada"
+      }
+    }
+  ],
+  "models": [
+    {
+      "name": "User",
+      "table": "users",
+      "fields": ["id (PK)", "username (unique)", "email (unique)", "password_hash", "created_at", "last_login"]
+    },
+    {
+      "name": "Role",
+      "table": "roles",
+      "fields": ["id (PK)", "name (unique)"]
+    },
+    {
+      "name": "UserRole",
+      "table": "user_roles",
+      "fields": ["id (PK)", "user_id (FK users)", "role_id (FK roles)"]
+    },
+    {
+      "name": "ImageTask",
+      "table": "image_tasks",
+      "fields": ["id (PK)", "user_id (FK users)", "image_path", "status", "created_at", "completed_at", "transformation (JSONB)"]
+    },
+    {
+      "name": "TaskLog",
+      "table": "task_logs",
+      "fields": ["id (PK)", "task_id (FK image_tasks)", "log_message", "created_at"]
+    }
+  ],
+  "key_dependencies": {
+    "external_services": ["PostgreSQL", "MinIO (S3)", "Apache Kafka"],
+    "python_packages": ["fastapi", "sqlalchemy", "python-jose", "passlib", "boto3", "confluent-kafka", "pydantic", "pydantic-settings", "python-dotenv", "email-validator"]
+  },
+  "features": [
+    "User registration with email validation",
+    "JWT-based authentication (header + cookie)",
+    "Password hashing with bcrypt",
+    "Image upload to S3-compatible storage",
+    "Async image transformation via Kafka",
+    "CRUD operations on images",
+    "CORS middleware",
+    "Kafka topic auto-creation on startup"
+  ]
+}

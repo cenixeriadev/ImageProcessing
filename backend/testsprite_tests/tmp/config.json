@@ -1,0 +1,28 @@
+{
+  "status": "commited",
+  "type": "backend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8000",
+  "backendAuthType": "Bearer token",
+  "backendCredential": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBbnRvIiwiZXhwIjoxNzcxMDE1NTI1fQ.4PS1C-dVIcTfGXQ0Fc5M1Fi5__AdDEVE9efAp1VMfcs",
+  "executionArgs": {
+    "projectName": "backend",
+    "projectPath": "c:\\Users\\Lenovo\\Desktop\\ImageProcessing\\backend",
+    "testIds": [
+      "TC001",
+      "TC002",
+      "TC003",
+      "TC004",
+      "TC005",
+      "TC006",
+      "TC007",
+      "TC008"
+    ],
+    "additionalInstruction": "The backend uses FastAPI running on port 8000. Auth endpoints: POST /register, POST /login, POST /logout, GET /me. Image endpoints: POST /images (multipart upload), POST /images/{image_id}/transform, GET /images/{image_id}, DELETE /images/{image_id}. IMPORTANT: image_id is an INTEGER (not UUID). All image endpoints require Bearer token authentication. Register first to get a token. Register body: {username, password, email}. Login body: {username, password, remember_me}. For image upload use multipart form data with field 'file'. Use integer IDs when referencing images (e.g. 1, 2, 999999 for non-existent).",
+    "envs": {
+      "API_KEY": "sk-user-lQIfm_mrp3fzF8aA4x8L3p6GRhRhkq-tV-5yiYxFWiH4RjSP-y1UcDpLRjRcthNMohn1Gob_99J6NwNJetP3nFqcQOU2WtNkFCfyTY_wJu-Uv4iDXHUJTyuZg6MY9pzSwts"
+    }
+  },
+  "serverPort": 60278,
+  "proxy": "http://aa1cdcef-c3a8-4a62-ac45-fb5b9ce39f88:6HbffumTcNvQEa94zz4BTt2DzaxyATQs@tun.testsprite.com:8080"
+}
