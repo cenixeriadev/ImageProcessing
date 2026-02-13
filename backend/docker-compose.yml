@@ -8,6 +8,9 @@ services:
         - action: sync+restart
           path: ./api_service
           target: /app/api_service
+        - action: sync+restart
+          path: ./shared
+          target: /app/shared
           
     ports:
       - "8000:8000"
@@ -40,6 +43,9 @@ services:
         - action: sync+restart
           path: ./worker_service
           target: /app/worker
+        - action: sync+restart
+          path: ./shared
+          target: /app/shared
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/image_service
       - AWS_ACCESS_KEY_ID=minioadmin

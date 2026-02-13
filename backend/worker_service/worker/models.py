@@ -1,29 +1,9 @@
-from sqlalchemy import Column, Integer, Text, TIMESTAMP, ForeignKey, String
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import relationship
-from .database import Base
-from datetime import datetime
+"""
+Re-export models from the shared package.
+This file exists so that existing imports like `from worker.models import ImageTask`
+continue to work without modification.
+"""
 
-class ImageTask(Base):
-    __tablename__ = "image_tasks"
+from shared.models import ImageTask, TaskLog  # noqa: F401
 
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)
-    image_path = Column(Text, nullable=False)
-    status = Column(String(50), nullable=False)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    completed_at = Column(TIMESTAMP)
-    transformation = Column(JSONB)
-
-    logs = relationship("TaskLog", back_populates="task", cascade="all, delete")
-
-
-class TaskLog(Base):
-    __tablename__ = "task_logs"
-
-    id = Column(Integer, primary_key=True)
-    task_id = Column(Integer, ForeignKey("image_tasks.id", ondelete="CASCADE"), nullable=False)
-    log_message = Column(Text, nullable=False)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-
-    task = relationship("ImageTask", back_populates="logs")
+__all__ = ["ImageTask", "TaskLog"]

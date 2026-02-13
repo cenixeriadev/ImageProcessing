@@ -8,19 +8,21 @@ COPY ../requirements.txt .
 # 2. Instalar dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
+# 3. Copiar paquete compartido (modelos unificados)
+COPY ./shared ./shared
 
 COPY ./api_service .
 
-# 3. Crear usuario no privilegiado
+# 4. Crear usuario no privilegiado
 RUN groupadd -r appuser && useradd -r -g appuser appuser \
     && chown -R appuser:appuser /app
 
-# 4. Establecer PYTHONPATH y directorio de trabajo
+# 5. Establecer PYTHONPATH y directorio de trabajo
 ENV PYTHONPATH="${PYTHONPATH}:/app"
 WORKDIR /app/app
 
-# 5. Cambiar a usuario no privilegiado
+# 6. Cambiar a usuario no privilegiado
 USER appuser
 
-# 6. Comando para ejecutar (igual a tu comando local)
+# 7. Comando para ejecutar
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

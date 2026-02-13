@@ -5,7 +5,7 @@ from app.database import SessionLocal
 from app.auth import get_current_user
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-
+from datetime import datetime,timezone
 router = APIRouter()
 
 def get_db():
@@ -19,7 +19,7 @@ def get_db():
 async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db), user = Depends(get_current_user)):
     content = await file.read()
     s3_url = storage.upload_image(content, file.filename)
-
+    
     image = ImageTask(
         user_id=user.id,
         image_path=s3_url,
@@ -28,7 +28,8 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
             "filename": file.filename,
             "content_type": file.content_type,
             "size": len(content)
-        }
+        },
+        completed_at = datetime.now(timezone.utc)
     )
 
     db.add(image)

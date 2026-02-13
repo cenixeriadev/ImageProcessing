@@ -17,6 +17,9 @@ COPY ../requirements.txt .
 # Instalar dependencias Python
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copiar paquete compartido (modelos unificados)
+COPY ./shared ./shared
+
 # Copiar todo el código del worker
 COPY ./worker_service/worker ./worker
 

@@ -1,7 +1,7 @@
 from confluent_kafka import Consumer
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from worker.image_processor import process_image_task
 from worker.database import get_session
 from worker.models import ImageTask, TaskLog
@@ -22,39 +22,51 @@ consumer.subscribe([TOPIC])
 
 
 def handle_task(task_data):
+    """Process a transformation task by UPDATING the existing ImageTask row."""
     db = next(get_session())
     task_id = task_data["task_id"]
     try:
+        # ── 1. Locate the existing task ──────────────────────────
         task = db.query(ImageTask).filter(ImageTask.id == task_id).first()
         if not task:
             logger.warning(f"Tarea {task_id} no encontrada en DB.")
             return
 
+        # ── 2. Mark as processing ────────────────────────────────
+        task.status = "processing"
+        task.transformation = task_data["transformation"]
         db.commit()
-        task_transformation = ImageTask(
-            user_id=task.user_id,
-            image_path=task.image_path,
-            status="processing",
-            transformation=task_data["transformation"]
-        )
-        #Procesar imagen y subir resultado
-        new_path = process_image_task(task_data["image_path"], task_data["transformation"])
-        task_transformation.image_path = new_path
-        task_transformation.status = "completed"
-        task_transformation.completed_at = datetime.utcnow()
 
-        db.add(TaskLog(task_id=task_transformation.id, log_message="Transformación completada."))
-        db.add(task_transformation)
+        # ── 3. Run the actual image transformation ───────────────
+        new_path = process_image_task(
+            task_data["image_path"],
+            task_data["transformation"],
+        )
+
+        # ── 4. Update with result ────────────────────────────────
+        task.image_path = new_path
+        task.status = "completed"
+        task.completed_at = datetime.now(timezone.utc)
         db.commit()
-        logger.info(f"Tarea {task_transformation.id} completada.")
-        
+
+        # ── 5. Append success log ────────────────────────────────
+        db.add(TaskLog(task_id=task.id, log_message="Transformación completada."))
+        db.commit()
+        logger.info(f"Tarea {task_id} completada → {new_path}")
+
     except Exception as e:
-        task = db.query(ImageTask).filter(ImageTask.id == task_id).first()
-        if task:
-            task.status = "error"
-            db.add(TaskLog(task_id=task.id, log_message=f"Error: {str(e)}"))
-            db.commit()
+        db.rollback()
+        try:
+            task = db.query(ImageTask).filter(ImageTask.id == task_id).first()
+            if task:
+                task.status = "error"
+                db.add(TaskLog(task_id=task.id, log_message=f"Error: {str(e)}"))
+                db.commit()
+        except Exception as inner_e:
+            logger.error(f"Error actualizando estado de error para tarea {task_id}: {inner_e}")
         logger.error(f"Error procesando tarea {task_id}: {e}")
+    finally:
+        db.close()
 
 
 def run_consumer():

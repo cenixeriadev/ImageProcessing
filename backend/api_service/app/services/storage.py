@@ -6,6 +6,8 @@ import uuid
 import boto3
 from botocore.exceptions import NoCredentialsError
 
+
+
 logger = logging.getLogger(__name__)
 
 # Variables de entorno o valores directos para MinIO
@@ -51,6 +53,7 @@ def upload_image(file_data: bytes, original_filename: str) -> str:
         return f"http://localhost:9000/{BUCKET_NAME}/{key}"
     except NoCredentialsError:
         raise Exception("Credenciales de MinIO no configuradas correctamente.")
+    
 
 
 def delete_image(file_url: str) -> None:
