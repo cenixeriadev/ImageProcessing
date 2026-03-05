@@ -12,13 +12,13 @@ export default function Login() {
 
   return (
     <AuthLayout
-      title="LOGIN"
+      title="Login"
       description="Hi, Welcome back, fill each gap with your user credentials."
     >
       <form className="contenido" onSubmit={handleSubmit}>
         <div className="input-box">
           <input type="text" placeholder="Username" required />
-          <i className="bx bxs-user"></i>
+          <i class="bx bx-envelope" />
         </div>
 
         <div className="input-box second">

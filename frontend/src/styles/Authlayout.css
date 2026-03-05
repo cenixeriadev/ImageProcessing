@@ -1,0 +1,176 @@
+@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+body {
+  background: linear-gradient(90deg, #1b6ea2);
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+}
+
+/* lado animación */
+
+.auth-left {
+  background: linear-gradient(120deg, #1e7db0, #569ec4, #8fbed8);
+  color: white;
+  padding: 90px;
+  text-align: center;
+  height: 650px;
+  width: 980px;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  margin-left: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-left h1 {
+  font-size: 40px;
+}
+
+.auth-left p {
+  max-width: 620px;
+  margin-bottom: 30px;
+  padding-left: 130px;
+}
+
+/* Contenedor del login (Lo que está afuera)*/
+.auth-right {
+  background-color: rgb(212, 225, 236);
+  border-radius: 15px;
+  position: relative;
+  height: 735px;
+  width: 479px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  right: 112px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Título */
+.auth-container .title {
+  margin-top: -57px;
+  font-weight: bold;
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: -10px;
+  padding-right: 10px;
+}
+
+/* Descripción */
+.auth-container .descripcion {
+  font-size: 15px;
+  margin-bottom: -28px;
+  padding: 20px 10px;
+}
+
+/* Caja donde se muestra los formularios (Manipular lo que está dentro de los formularios) */
+.form-box {
+  padding-top: 40px;
+  width: 80%;
+  height: 70%;
+  padding-left: 10px;
+}
+
+/* Textos generales */
+.auth-container h1 {
+  font-size: 40px;
+  margin: -4.2px 0px 13.6px 0px;
+  text-align: center;
+}
+
+.auth-container p {
+  font-size: 14.5px;
+  margin: 5px 19px 14px;
+  text-align: center;
+}
+
+.auth-container h3 {
+  font-size: 15px;
+  margin: 10px 0px 0px 0px;
+}
+
+/* Separador */
+.separador {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.separador span {
+  width: 190px;
+  height: 1px;
+  background-color: black;
+}
+
+.separador p {
+  font-size: 30px;
+  font-weight: bold;
+  color: #000000;
+}
+
+/* Botón login GitHub */
+.btn-github-login {
+  display: inline-flex;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 30px;
+  color: #333;
+  border: 0.1px solid black;
+  border-radius: 84px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    transform 0.1s ease;
+  font-family: "Poppins", sans-serif;
+
+  margin-left: 78px;
+  margin-top: 10px;
+}
+
+.btn-github-login:hover {
+  background: #71a6d1;
+}
+
+.btn-github-login:active {
+  transform: scale(0.97);
+}
+
+.btn-github-login i {
+  font-size: 30px;
+  color: #000000;
+  margin-right: 10px;
+}
+
+/* Botón repo GitHub */
+.btn-github-repository {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 33px;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 84px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  margin: 0;
+}

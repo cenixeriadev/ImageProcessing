@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import PasswordLayout from "../components/PasswordLayout";
 import "../styles/forgetpassword.css";
+import AuthLayout from "../components/AuthLayout";
 
 export default function ForgotPassword() {
   const handleSubmit = (e) => {
@@ -8,20 +8,27 @@ export default function ForgotPassword() {
     console.log("Forgot password submit");
   };
   return (
-    <PasswordLayout
+    <AuthLayout
       title="Forgot Password"
       description="We will send you an email with the steps to change your password"
     >
       <form className="contenido" onSubmit={handleSubmit}>
         <div className="input-box second">
           <input type="email" placeholder="Enter your Email" required />
-          <i className="bxr  bx-envelope"></i>
+          <i class="bx bx-envelope" />
         </div>
 
         <button type="submit" className="btn-glass">
           Send Link
         </button>
+
+        <p className="flex-gap">
+          <span>Already have an account?</span>
+          <Link to="/" className="sign-up button">
+            Login
+          </Link>
+        </p>
       </form>
-    </PasswordLayout>
+    </AuthLayout>
   );
 }
