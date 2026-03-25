@@ -16,6 +16,7 @@ export default function NewPassword() {
         <div className="input-box">
           <input
             type="password"
+            name="password"
             placeholder="Enter your new Password"
             required
           />
@@ -29,6 +30,7 @@ export default function NewPassword() {
         <div className="input-box second">
           <input
             type="password"
+            name="ConfirmPassword"
             placeholder="Reconfirm your password"
             required
           />

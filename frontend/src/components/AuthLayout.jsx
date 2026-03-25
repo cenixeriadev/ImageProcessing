@@ -19,18 +19,14 @@ export default function AuthLayout({ title, description, children }) {
           >
             <img src={icon} alt="GitHub Repo Icon" width="16" />
           </a>
-
           <h1 className="title">{title}</h1>
           <p className="descripcion">{description}</p>
-
           {children}
-
           <div className="separador">
             <span></span>
             <p>Or</p>
             <span></span>
           </div>
-
           <a
             href="https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fcenixeriadev%2FImageProcessing"
             className="btn-github-login"

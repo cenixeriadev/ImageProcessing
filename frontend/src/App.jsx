@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import ForgotPassword from "./pages/forgotpassword";
-import Home from "./pages/Home";
+import ImageInput from "./pages/BeginImage";
 import NewPassword from "./pages/newpassword";
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
         <Route path="/new-password" element={<NewPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/Initialize" element={<ImageInput />} />
       </Routes>
     </BrowserRouter>
   );

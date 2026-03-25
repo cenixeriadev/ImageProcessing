@@ -7,7 +7,7 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/home");
+    navigate("/Initialize");
   };
 
   return (
@@ -18,7 +18,7 @@ export default function Login() {
       <form className="contenido" onSubmit={handleSubmit}>
         <div className="input-box">
           <input type="text" placeholder="Username" required />
-          <i class="bx bx-envelope" />
+          <i class="bx bx-user" />
         </div>
 
         <div className="input-box second">
