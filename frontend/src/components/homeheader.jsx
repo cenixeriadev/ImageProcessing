@@ -7,8 +7,8 @@ export default function HomeLayout({ title, username, children }) {
       <h1 className="tittle-header">{title}</h1>
       <div className="second-container">
         <button className="first-button">
-          {username}
           <i className="bx bx-user-circle" />
+          {username}
         </button>
         <div className="second-button">
           <img
