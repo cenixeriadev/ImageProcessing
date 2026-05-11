@@ -1213,7 +1213,7 @@ body {
         </div>
         <div class="metadata-row">
           <div class="metadata-label text-body-medium">Date</div>
-          <div class="metadata-value text-body">13/2/2026</div>
+          <div class="metadata-value text-body">11/5/2026</div>
         </div>
         <div class="metadata-row">
           <div class="metadata-label text-body-medium">Prepared by</div>
@@ -1237,16 +1237,9 @@ body {
             <li><span class="coverage-highlight">0/0</span> of tests passed</li>
             <li><span class="coverage-highlight">Key gaps / risks:</span>
             
-              <h3>✅ Resolved This Session</h3>
-<ul>
-<li><strong>image_id type validation</strong> — All image endpoints now use <code>int</code> path parameter, preventing SQLAlchemy type errors.</li>
-<li><strong>Inconsistent ID representation</strong> — Upload endpoint now returns integer ID consistently.</li>
-</ul>
-<h3>🟡 Remaining (Low Priority)</h3>
-<ul>
-<li><strong>No rate limiting</strong> on <code>/register</code> and <code>/login</code> — susceptible to brute-force.</li>
-<li><strong>Test data cleanup</strong> — Tests create persistent records in DB. Consider adding teardown hooks.</li>
-<li><strong>TC007 network flake</strong> — Re-run to confirm; the code logic is correct (same as TC005/TC008 which passed).</li>
+              <ul>
+<li>No rate limiting on <code>/register</code> and <code>/login</code> (brute-force risk).</li>
+<li>Test data persists in DB; consider cleanup hooks for CI runs.</li>
 </ul>
 <hr>
 

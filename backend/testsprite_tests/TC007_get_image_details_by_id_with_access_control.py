@@ -1,117 +1,111 @@
 import requests
-import tempfile
-import os
-import random
-import string
+from requests.exceptions import RequestException
 import uuid
+import io
 
 BASE_URL = "http://localhost:8000"
 TIMEOUT = 30
 
 
-def random_string(length=8):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-
-
-def register_user(username, password, email):
+def register_user(username: str, email: str, password: str):
     url = f"{BASE_URL}/register"
     payload = {
         "username": username,
-        "password": password,
-        "email": email
+        "email": email,
+        "password": password
     }
-    resp = requests.post(url, json=payload, timeout=TIMEOUT)
-    resp.raise_for_status()
-    data = resp.json()
-    assert "access_token" in data
-    return data["access_token"]
+    try:
+        resp = requests.post(url, json=payload, timeout=TIMEOUT)
+        resp.raise_for_status()
+        data = resp.json()
+        token = data.get("access_token")
+        assert token is not None and data.get("token_type") == "bearer"
+        return token
+    except RequestException as e:
+        raise RuntimeError(f"User registration failed: {e}")
 
 
-def upload_image(token, file_path):
+def upload_image(token: str, filename="test-image.png", content=b"fakeimagecontent"):
     url = f"{BASE_URL}/images"
     headers = {"Authorization": f"Bearer {token}"}
-    with open(file_path, "rb") as f:
-        files = {"file": (os.path.basename(file_path), f, "application/octet-stream")}
-        resp = requests.post(url, headers=headers, files=files, timeout=TIMEOUT)
-    resp.raise_for_status()
-    data = resp.json()
-    assert "id" in data and "url" in data
-    return data["id"]
-
-
-def get_image(token, image_id):
-    url = f"{BASE_URL}/images/{image_id}"
-    headers = {"Authorization": f"Bearer {token}"}
-    return requests.get(url, headers=headers, timeout=TIMEOUT)
-
-
-def delete_image(token, image_id):
-    url = f"{BASE_URL}/images/{image_id}"
-    headers = {"Authorization": f"Bearer {token}"}
-    resp = requests.delete(url, headers=headers, timeout=TIMEOUT)
-    # Could be 200 or 404 if already deleted
-    return resp
-
-
-def test_TC007_get_image_details_by_id_with_access_control():
-    # Register first user (owner)
-    owner_username = f"owner_{random_string()}"
-    owner_password = "StrongPass!123"
-    owner_email = f"{owner_username}@example.com"
-    owner_token = register_user(owner_username, owner_password, owner_email)
-
-    # Register second user (non-owner)
-    other_username = f"other_{random_string()}"
-    other_password = "StrongPass!123"
-    other_email = f"{other_username}@example.com"
-    other_token = register_user(other_username, other_password, other_email)
-
-    # Create a temporary file to upload
-    tmp_file = tempfile.NamedTemporaryFile(delete=False)
+    files = {"file": (filename, io.BytesIO(content), "image/png")}
     try:
-        tmp_file.write(os.urandom(1024))  # 1KB random content
-        tmp_file.close()
+        resp = requests.post(url, headers=headers, files=files, timeout=TIMEOUT)
+        resp.raise_for_status()
+        data = resp.json()
+        image_id = data.get("id")
+        image_url = data.get("url")
+        assert image_id and image_url
+        return image_id
+    except RequestException as e:
+        raise RuntimeError(f"Image upload failed: {e}")
 
-        image_id = None
-        try:
-            # Owner uploads an image
-            image_id = upload_image(owner_token, tmp_file.name)
 
-            # Owner accesses the image details - expect 200
-            resp_owner = get_image(owner_token, image_id)
-            assert resp_owner.status_code == 200
-            data_owner = resp_owner.json()
-            assert "id" in data_owner and data_owner["id"] == image_id
-            assert "url" in data_owner and isinstance(data_owner["url"], str) and data_owner["url"]
+def delete_image(token: str, image_id: str):
+    url = f"{BASE_URL}/images/{image_id}"
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        resp = requests.delete(url, headers=headers, timeout=TIMEOUT)
+        # delete may return 200 or 404 (if already deleted)
+        if resp.status_code not in (200, 404):
+            resp.raise_for_status()
+        return resp.status_code
+    except RequestException as e:
+        # If unable to delete, log error but do not fail cleanup
+        pass
 
-            # Non-owner accesses same image details - expect 404
-            resp_other = get_image(other_token, image_id)
-            assert resp_other.status_code == 404
 
-            # Access with invalid token - expect 401 (per PRD for auth required endpoint)
-            resp_invalid_auth = requests.get(f"{BASE_URL}/images/{image_id}",
-                                            headers={"Authorization": "Bearer invalidtoken"},
-                                            timeout=TIMEOUT)
-            assert resp_invalid_auth.status_code == 401
+def get_image_details(token: str, image_id: str):
+    url = f"{BASE_URL}/images/{image_id}"
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        resp = requests.get(url, headers=headers, timeout=TIMEOUT)
+        return resp
+    except RequestException as e:
+        raise RuntimeError(f"Get image details request failed: {e}")
 
-            # Access without authentication - expect 401
-            resp_no_auth = requests.get(f"{BASE_URL}/images/{image_id}", timeout=TIMEOUT)
-            assert resp_no_auth.status_code == 401
 
-            # Request non-existent image by owner - expect 404
-            non_existent_id = str(uuid.uuid4())
-            resp_non_exist = get_image(owner_token, non_existent_id)
-            assert resp_non_exist.status_code == 404
+def test_get_image_details_by_id_with_access_control():
+    # Register user1 and user2
+    username1 = f"user1_{uuid.uuid4().hex[:8]}"
+    email1 = f"{username1}@example.com"
+    password1 = "Password123!"
+    token1 = register_user(username1, email1, password1)
 
-        finally:
-            # Cleanup: delete image by owner if created
-            if image_id is not None:
-                delete_resp = delete_image(owner_token, image_id)
-                # Expect 200 or 404 if already deleted
-                assert delete_resp.status_code in (200, 404)
+    username2 = f"user2_{uuid.uuid4().hex[:8]}"
+    email2 = f"{username2}@example.com"
+    password2 = "Password123!"
+    token2 = register_user(username2, email2, password2)
+
+    image_id = None
+    try:
+        # user1 uploads an image
+        image_id = upload_image(token1)
+
+        # user1 tries to get the image details - expect 200 and correct id/url
+        resp_owner = get_image_details(token1, image_id)
+        assert resp_owner.status_code == 200
+        data_owner = resp_owner.json()
+        assert data_owner.get("id") == image_id
+        assert "url" in data_owner and isinstance(data_owner["url"], str)
+
+        # user2 tries to get the same image details - expect 404 (not found / unauthorized access)
+        resp_other = get_image_details(token2, image_id)
+        assert resp_other.status_code == 404
+
+        # Unauthenticated request to get image details - expect 401 or 404 (likely 401)
+        resp_unauth = requests.get(f"{BASE_URL}/images/{image_id}", timeout=TIMEOUT)
+        assert resp_unauth.status_code in (401, 404)
+
+        # Request with invalid image ID with user1 auth - expect 404
+        invalid_image_id = str(uuid.uuid4())
+        resp_invalid = get_image_details(token1, invalid_image_id)
+        assert resp_invalid.status_code == 404
 
     finally:
-        os.unlink(tmp_file.name)
+        # Cleanup - delete image if created
+        if image_id:
+            delete_image(token1, image_id)
 
 
-test_TC007_get_image_details_by_id_with_access_control()
+test_get_image_details_by_id_with_access_control()

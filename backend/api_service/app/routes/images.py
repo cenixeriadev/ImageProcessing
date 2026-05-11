@@ -8,6 +8,13 @@ from fastapi import HTTPException
 from datetime import datetime,timezone
 router = APIRouter()
 
+
+def parse_image_id(image_id: str) -> int | None:
+    try:
+        return int(image_id)
+    except (TypeError, ValueError):
+        return None
+
 def get_db():
     db = SessionLocal()
     try:
@@ -36,11 +43,18 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
     db.commit()
     db.refresh(image)
 
-    return {"id": image.id, "url": image.image_path}
+    return {"id": str(image.id), "url": image.image_path}
 
 @router.post("/images/{image_id}/transform")
-def request_transformation(image_id: int, transformations: dict, db: Session = Depends(get_db), user = Depends(get_current_user)):
-    image = db.query(ImageTask).filter(ImageTask.id == image_id, ImageTask.user_id == user.id).first()
+def request_transformation(image_id: str, transformations: dict, db: Session = Depends(get_db), user = Depends(get_current_user)):
+    image_id_int = parse_image_id(image_id)
+    if image_id_int is None:
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+
+    if isinstance(transformations, dict) and "transformations" in transformations:
+        transformations = transformations["transformations"]
+
+    image = db.query(ImageTask).filter(ImageTask.id == image_id_int, ImageTask.user_id == user.id).first()
     if not image:
         raise HTTPException(status_code=404, detail="Imagen no encontrada")
 
@@ -61,21 +75,29 @@ def request_transformation(image_id: int, transformations: dict, db: Session = D
 
 
 @router.get("/images/{image_id}")
-def get_image(image_id: int, db: Session = Depends(get_db), user = Depends(get_current_user)):
-    image = db.query(ImageTask).filter(ImageTask.id == image_id, ImageTask.user_id == user.id).first()
+def get_image(image_id: str, db: Session = Depends(get_db), user = Depends(get_current_user)):
+    image_id_int = parse_image_id(image_id)
+    if image_id_int is None:
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+
+    image = db.query(ImageTask).filter(ImageTask.id == image_id_int, ImageTask.user_id == user.id).first()
 
     if not image:
         raise HTTPException(status_code=404, detail="Imagen no encontrada")
 
     return{
-        "id": image.id,
+        "id": str(image.id),
         "url": image.image_path
     }
 
 
 @router.delete("/images/{image_id}")
-def delete_image(image_id: int, db: Session = Depends(get_db), user = Depends(get_current_user)):
-    image = db.query(ImageTask).filter(ImageTask.id == image_id, ImageTask.user_id == user.id).first()
+def delete_image(image_id: str, db: Session = Depends(get_db), user = Depends(get_current_user)):
+    image_id_int = parse_image_id(image_id)
+    if image_id_int is None:
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+
+    image = db.query(ImageTask).filter(ImageTask.id == image_id_int, ImageTask.user_id == user.id).first()
 
     if not image:
         raise HTTPException(status_code=404, detail="Imagen no encontrada")

@@ -4,72 +4,56 @@ import uuid
 BASE_URL = "http://localhost:8000"
 TIMEOUT = 30
 
-def test_user_logout_clears_auth_cookie():
-    # Prepare unique user data for registration
-    unique_suffix = uuid.uuid4().hex[:8]
-    username = f"testuser_{unique_suffix}"
-    password = "TestPassword123!"
-    email = f"{unique_suffix}@example.com"
+def test_user_logout_clears_authentication_cookie():
+    username = f"user_{uuid.uuid4().hex[:8]}"
+    password = "TestPass123!"
+    email = f"{username}@example.com"
 
     session = requests.Session()
-
     try:
         # Register user
-        register_payload = {
-            "username": username,
-            "password": password,
-            "email": email
-        }
-        reg_resp = session.post(
+        register_resp = session.post(
             f"{BASE_URL}/register",
-            json=register_payload,
-            timeout=TIMEOUT
+            json={"username": username, "password": password, "email": email},
+            timeout=TIMEOUT,
         )
-        assert reg_resp.status_code == 200, f"Register failed: {reg_resp.text}"
-        assert "access_token" in reg_resp.json()
+        assert register_resp.status_code == 200
+        register_json = register_resp.json()
+        assert "access_token" in register_json
+        assert register_json.get("token_type") == "bearer"
 
         # Login user
-        login_payload = {
-            "username": username,
-            "password": password,
-            "remember_me": False
-        }
         login_resp = session.post(
             f"{BASE_URL}/login",
-            json=login_payload,
-            timeout=TIMEOUT
+            json={"username": username, "password": password, "remember_me": False},
+            timeout=TIMEOUT,
         )
-        assert login_resp.status_code == 200, f"Login failed: {login_resp.text}"
+        assert login_resp.status_code == 200
         login_json = login_resp.json()
         assert "access_token" in login_json
-        # Check that access_token cookie is set (httponly)
-        cookies = login_resp.cookies
-        assert "access_token" in cookies, "access_token cookie missing after login"
+        assert login_json.get("token_type") == "bearer"
 
-        # Before logout, confirm access_token cookie present in session.cookies
-        assert "access_token" in session.cookies, "access_token cookie missing in session before logout"
+        # Check that cookie 'access_token' is set
+        assert "access_token" in session.cookies and session.cookies.get("access_token")
 
-        # Logout user - this should clear the access_token cookie
-        logout_resp = session.post(
-            f"{BASE_URL}/logout",
-            timeout=TIMEOUT
-        )
-        assert logout_resp.status_code == 200, f"Logout failed: {logout_resp.text}"
+        # Logout user
+        logout_resp = session.post(f"{BASE_URL}/logout", timeout=TIMEOUT)
+        assert logout_resp.status_code == 200
         logout_json = logout_resp.json()
         assert logout_json.get("message") == "logged out"
 
-        # After logout, the access_token cookie should be cleared/expired
-        # We verify by checking if session cookies no longer contain 'access_token' or that its value is empty
-        # Manually update session cookies with response cookies from logout (which clears the cookie)
-        session.cookies.update(logout_resp.cookies)
-        cookie_value = session.cookies.get("access_token")
-        # It can be None or an empty string or expired (depends on implementation),
-        # assert that cookie is either missing or empty string
-        assert not cookie_value, "access_token cookie was not cleared after logout"
+        # Confirm cookie deleted or expired by checking cookie value
+        access_token_cookie = session.cookies.get("access_token")
+        # The cookie might be cleared (None) or emptied string after logout
+        assert access_token_cookie is None or access_token_cookie == ""
+
+        # Optionally, verify that authenticated endpoint now fails (GET /me)
+        me_resp = session.get(f"{BASE_URL}/me", timeout=TIMEOUT)
+        assert me_resp.status_code == 401
 
     finally:
-        # Cleanup: no persistent user deletion endpoint described, so no explicit cleanup feasible
-        # This test leaves a user registered; in real env a cleanup step might be needed.
+        # Clean-up: If API supports user deletion, would delete user here.
+        # No user delete endpoint specified, so no action.
         pass
 
-test_user_logout_clears_auth_cookie()
+test_user_logout_clears_authentication_cookie()
